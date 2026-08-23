@@ -6,8 +6,10 @@ import androidx.room.TypeConverters
 import com.crypticsamsara.sabikudi.core.data.converters.Converters
 import com.crypticsamsara.sabikudi.core.data.dao.GroupDao
 import com.crypticsamsara.sabikudi.core.data.dao.InventoryDao
+import com.crypticsamsara.sabikudi.core.data.dao.LineItemDao
 import com.crypticsamsara.sabikudi.core.data.dao.PersonDao
 import com.crypticsamsara.sabikudi.core.data.dao.ReceiptDao
+import com.crypticsamsara.sabikudi.core.data.dao.SplitAssignmentDao
 import com.crypticsamsara.sabikudi.core.data.entities.Group
 import com.crypticsamsara.sabikudi.core.data.entities.GroupMember
 import com.crypticsamsara.sabikudi.core.data.entities.InventoryEntry

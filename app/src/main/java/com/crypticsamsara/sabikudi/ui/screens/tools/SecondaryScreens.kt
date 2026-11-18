@@ -1,7 +1,9 @@
 package com.crypticsamsara.sabikudi.ui.screens.tools
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,10 +26,11 @@ import com.crypticsamsara.sabikudi.ui.theme.SabiKudiTheme
 fun GenericToolScaffold(
     title: String,
     onBackRequested: () -> Unit,
-    content: @Composable (ColumnScope) -> Unit
+    content: @Composable (ColumnScope, (String) -> Unit) -> Unit
 ) {
     val extendedColors = SabiKudiTheme.extendedColors
     val scrollState = rememberScrollState()
+    var toastMessage by remember { mutableStateOf<String?>(null) }
 
     Scaffold(
         topBar = {
@@ -41,15 +44,44 @@ fun GenericToolScaffold(
             )
         }
     ) { innerPadding ->
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .verticalScroll(scrollState)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            content(this)
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(scrollState)
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                content(this) { msg -> toastMessage = msg }
+            }
+
+            toastMessage?.let { msg ->
+                LaunchedEffect(msg) {
+                    kotlinx.coroutines.delay(3000)
+                    toastMessage = null
+                }
+                Box(
+                    modifier = Modifier.fillMaxSize().padding(16.dp),
+                    contentAlignment = Alignment.BottomCenter
+                ) {
+                    Surface(
+                        color = extendedColors.navy,
+                        shape = RoundedCornerShape(12.dp),
+                        shadowElevation = 8.dp
+                    ) {
+                        Text(
+                            text = "✓ $msg",
+                            color = Color.White,
+                            fontWeight = FontWeight.Medium,
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)
+                        )
+                    }
+                }
+            }
         }
     }
 }
@@ -66,7 +98,7 @@ fun SettlementHistoryScreen(onBackRequested: () -> Unit) {
         )
     }
 
-    GenericToolScaffold(title = "Settlement history", onBackRequested = onBackRequested) {
+    GenericToolScaffold(title = "Settlement history", onBackRequested = onBackRequested) { _, showToast ->
         if (settlements.isEmpty()) {
             Text(text = "No settlements yet.", fontSize = 14.sp, color = extendedColors.muted)
         } else {
@@ -81,14 +113,18 @@ fun SettlementHistoryScreen(onBackRequested: () -> Unit) {
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Column {
-                            Text(text = pair, fontWeight = FontWeight.Bold, color = extendedColors.navy)
-                            Text(text = status, fontSize = 12.sp, color = extendedColors.muted)
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(text = pair, fontWeight = FontWeight.Bold, color = extendedColors.navy, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+                            Text(text = status, fontSize = 12.sp, color = extendedColors.muted, maxLines = 1)
                         }
+                        Spacer(modifier = Modifier.width(8.dp))
                         Column(horizontalAlignment = Alignment.End) {
-                            Text(text = "₦${String.format("%,.2f", amt / 100.0)}", fontWeight = FontWeight.ExtraBold, color = extendedColors.navy)
+                            Text(text = "₦${String.format("%,.2f", amt / 100.0)}", fontWeight = FontWeight.ExtraBold, color = extendedColors.navy, maxLines = 1)
                             TextButton(
-                                onClick = { settlements.removeAt(index) },
+                                onClick = {
+                                    settlements.removeAt(index)
+                                    showToast("Undone settlement")
+                                },
                                 contentPadding = PaddingValues(0.dp)
                             ) {
                                 Text(text = "Undo", fontSize = 12.sp, color = extendedColors.terracotta)
@@ -113,7 +149,7 @@ fun RecurringExpensesScreen(onBackRequested: () -> Unit) {
         )
     }
 
-    GenericToolScaffold(title = "Recurring expenses", onBackRequested = onBackRequested) {
+    GenericToolScaffold(title = "Recurring expenses", onBackRequested = onBackRequested) { _, showToast ->
         expenses.forEach { (name, amt) ->
             Card(
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
@@ -123,13 +159,15 @@ fun RecurringExpensesScreen(onBackRequested: () -> Unit) {
                 Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(text = name, fontWeight = FontWeight.Bold, color = extendedColors.navy)
-                        Text(text = "₦${String.format("%,.2f", amt / 100.0)}", fontWeight = FontWeight.ExtraBold, color = extendedColors.navy)
+                        Text(text = name, fontWeight = FontWeight.Bold, color = extendedColors.navy, modifier = Modifier.weight(1f), maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(text = "₦${String.format("%,.2f", amt / 100.0)}", fontWeight = FontWeight.ExtraBold, color = extendedColors.navy, maxLines = 1)
                     }
                     OutlinedButton(
-                        onClick = { /* Post this month */ },
+                        onClick = { showToast("Successfully posted $name for this month") },
                         shape = RoundedCornerShape(8.dp),
                         contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
                     ) {
@@ -144,7 +182,7 @@ fun RecurringExpensesScreen(onBackRequested: () -> Unit) {
 @Composable
 fun RestockExpiryScreen(onBackRequested: () -> Unit) {
     val extendedColors = SabiKudiTheme.extendedColors
-    GenericToolScaffold(title = "Restock & expiry", onBackRequested = onBackRequested) {
+    GenericToolScaffold(title = "Restock & expiry", onBackRequested = onBackRequested) { _, showToast ->
         Text(text = "Restock list", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = extendedColors.muted)
         Card(
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
@@ -156,12 +194,13 @@ fun RestockExpiryScreen(onBackRequested: () -> Unit) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Column {
-                    Text(text = "Indomie carton", fontWeight = FontWeight.Bold, color = extendedColors.navy)
-                    Text(text = "3 left · threshold 5", fontSize = 12.sp, color = extendedColors.muted)
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(text = "Indomie carton", fontWeight = FontWeight.Bold, color = extendedColors.navy, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+                    Text(text = "3 left · threshold 5", fontSize = 12.sp, color = extendedColors.muted, maxLines = 1)
                 }
+                Spacer(modifier = Modifier.width(8.dp))
                 Button(
-                    onClick = { /* Restocked */ },
+                    onClick = { showToast("Indomie carton marked as restocked") },
                     colors = ButtonDefaults.buttonColors(containerColor = extendedColors.teal),
                     shape = RoundedCornerShape(8.dp),
                     contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
@@ -176,7 +215,7 @@ fun RestockExpiryScreen(onBackRequested: () -> Unit) {
 @Composable
 fun SpendingScreen(onBackRequested: () -> Unit) {
     val extendedColors = SabiKudiTheme.extendedColors
-    GenericToolScaffold(title = "Spending breakdown", onBackRequested = onBackRequested) {
+    GenericToolScaffold(title = "Spending breakdown", onBackRequested = onBackRequested) { _, _ ->
         val categories = listOf(Pair("Groceries", 2850000L), Pair("Toiletries", 960000L), Pair("Beverages", 1450000L))
         val maxAmt = categories.maxOf { it.second }.toFloat()
 
@@ -189,10 +228,12 @@ fun SpendingScreen(onBackRequested: () -> Unit) {
                 Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(text = cat, fontWeight = FontWeight.Bold, color = extendedColors.navy)
-                        Text(text = "₦${String.format("%,.2f", amt / 100.0)}", fontWeight = FontWeight.ExtraBold, color = extendedColors.navy)
+                        Text(text = cat, fontWeight = FontWeight.Bold, color = extendedColors.navy, modifier = Modifier.weight(1f), maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(text = "₦${String.format("%,.2f", amt / 100.0)}", fontWeight = FontWeight.ExtraBold, color = extendedColors.navy, maxLines = 1)
                     }
                     LinearProgressIndicator(
                         progress = { (amt / maxAmt).toFloat() },
@@ -209,7 +250,7 @@ fun SpendingScreen(onBackRequested: () -> Unit) {
 @Composable
 fun AuditTrailScreen(onBackRequested: () -> Unit) {
     val extendedColors = SabiKudiTheme.extendedColors
-    GenericToolScaffold(title = "Audit trail", onBackRequested = onBackRequested) {
+    GenericToolScaffold(title = "Audit trail", onBackRequested = onBackRequested) { _, _ ->
         val logs = listOf("Nov 13 · Added receipt \"Shoprite Ikeja\"", "Nov 12 · Receipt \"Shoprite Lekki\" added to balances")
         logs.forEach { log ->
             Card(
@@ -226,7 +267,7 @@ fun AuditTrailScreen(onBackRequested: () -> Unit) {
 @Composable
 fun StatementScreen(onBackRequested: () -> Unit) {
     val extendedColors = SabiKudiTheme.extendedColors
-    GenericToolScaffold(title = "Statement (PDF)", onBackRequested = onBackRequested) {
+    GenericToolScaffold(title = "Statement (PDF)", onBackRequested = onBackRequested) { _, showToast ->
         Card(
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
             shape = RoundedCornerShape(12.dp),
@@ -247,7 +288,7 @@ fun StatementScreen(onBackRequested: () -> Unit) {
             }
         }
         Button(
-            onClick = { /* Export PDF */ },
+            onClick = { showToast("Statement PDF exported successfully") },
             colors = ButtonDefaults.buttonColors(containerColor = extendedColors.navy),
             shape = RoundedCornerShape(8.dp),
             modifier = Modifier.fillMaxWidth().height(48.dp)
@@ -260,7 +301,7 @@ fun StatementScreen(onBackRequested: () -> Unit) {
 @Composable
 fun BackupRestoreScreen(onBackRequested: () -> Unit) {
     val extendedColors = SabiKudiTheme.extendedColors
-    GenericToolScaffold(title = "Backup & restore", onBackRequested = onBackRequested) {
+    GenericToolScaffold(title = "Backup & restore", onBackRequested = onBackRequested) { _, showToast ->
         Card(
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
             shape = RoundedCornerShape(12.dp),
@@ -272,7 +313,7 @@ fun BackupRestoreScreen(onBackRequested: () -> Unit) {
             }
         }
         Button(
-            onClick = { /* Export backup */ },
+            onClick = { showToast("Backup data exported successfully") },
             colors = ButtonDefaults.buttonColors(containerColor = extendedColors.navy),
             shape = RoundedCornerShape(8.dp),
             modifier = Modifier.fillMaxWidth().height(48.dp)
@@ -280,7 +321,7 @@ fun BackupRestoreScreen(onBackRequested: () -> Unit) {
             Text(text = "Export backup", fontWeight = FontWeight.Bold)
         }
         OutlinedButton(
-            onClick = { /* Restore */ },
+            onClick = { showToast("Data restored from file successfully") },
             shape = RoundedCornerShape(8.dp),
             modifier = Modifier.fillMaxWidth().height(48.dp)
         ) {

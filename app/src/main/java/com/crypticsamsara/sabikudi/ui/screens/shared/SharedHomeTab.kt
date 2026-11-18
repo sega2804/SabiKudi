@@ -212,6 +212,7 @@ fun SharedHomeTab(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Row(
+                                modifier = Modifier.weight(1f),
                                 horizontalArrangement = Arrangement.spacedBy(10.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
@@ -227,26 +228,33 @@ fun SharedHomeTab(
                                         color = extendedColors.navy
                                     )
                                 }
-                                Column {
+                                Column(modifier = Modifier.weight(1f)) {
                                     Text(
                                         text = "${balance.debtor} owes ${balance.creditor}",
                                         fontSize = 14.sp,
                                         fontWeight = FontWeight.Bold,
-                                        color = extendedColors.navy
+                                        color = extendedColors.navy,
+                                        maxLines = 1,
+                                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
                                     )
                                     Text(
                                         text = "${balance.itemCount} item${if (balance.itemCount > 1) "s" else ""}",
                                         fontSize = 12.sp,
-                                        color = extendedColors.muted
+                                        color = extendedColors.muted,
+                                        maxLines = 1,
+                                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
                                     )
                                 }
                             }
+
+                            Spacer(modifier = Modifier.width(8.dp))
 
                             Text(
                                 text = "₦${String.format("%,.2f", balance.amountKobo / 100.0)}",
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.ExtraBold,
-                                color = extendedColors.terracotta
+                                color = extendedColors.terracotta,
+                                maxLines = 1
                             )
                         }
 
@@ -341,11 +349,29 @@ fun SharedHomeTab(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Column {
-                    Text(text = "Shoprite Lekki", fontWeight = FontWeight.Bold, color = extendedColors.navy)
-                    Text(text = "Nov 12 · 2 items", fontSize = 12.sp, color = extendedColors.muted)
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = "Shoprite Lekki",
+                        fontWeight = FontWeight.Bold,
+                        color = extendedColors.navy,
+                        maxLines = 1,
+                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                    )
+                    Text(
+                        text = "Nov 12 · 2 items",
+                        fontSize = 12.sp,
+                        color = extendedColors.muted,
+                        maxLines = 1,
+                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                    )
                 }
-                Text(text = "₦20,900.00", fontWeight = FontWeight.ExtraBold, color = extendedColors.navy)
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "₦20,900.00",
+                    fontWeight = FontWeight.ExtraBold,
+                    color = extendedColors.navy,
+                    maxLines = 1
+                )
             }
         }
 

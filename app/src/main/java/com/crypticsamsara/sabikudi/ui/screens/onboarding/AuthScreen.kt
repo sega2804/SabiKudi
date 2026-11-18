@@ -3,11 +3,13 @@ package com.crypticsamsara.sabikudi.ui.screens.onboarding
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -73,9 +75,19 @@ fun AuthScreen(
 
                     OutlinedTextField(
                         value = phoneNumber,
-                        onValueChange = { phoneNumber = it; errorMessage = null },
+                        onValueChange = { input ->
+                            val digits = input.filter { it.isDigit() }
+                            if (digits.length > 10) {
+                                errorMessage = "Phone number cannot exceed 10 digits"
+                                phoneNumber = digits.take(10)
+                            } else {
+                                errorMessage = null
+                                phoneNumber = input
+                            }
+                        },
                         label = { Text("Phone Number") },
                         singleLine = true,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                         modifier = Modifier.fillMaxWidth()
                     )
 
@@ -87,8 +99,11 @@ fun AuthScreen(
 
                     Button(
                         onClick = {
-                            if (phoneNumber.length < 8) {
-                                errorMessage = "Please enter a valid phone number."
+                            val digits = phoneNumber.filter { it.isDigit() }
+                            if (digits.length > 10) {
+                                errorMessage = "Phone number cannot exceed 10 digits"
+                            } else if (digits.length < 10) {
+                                errorMessage = "Phone number must be 10 digits"
                             } else {
                                 step = 2
                             }
@@ -128,9 +143,19 @@ fun AuthScreen(
 
                     OutlinedTextField(
                         value = otpCode,
-                        onValueChange = { otpCode = it; errorMessage = null },
+                        onValueChange = { input ->
+                            val digits = input.filter { it.isDigit() }
+                            if (digits.length > 6) {
+                                errorMessage = "Code cannot exceed 6 digits"
+                                otpCode = digits.take(6)
+                            } else {
+                                errorMessage = null
+                                otpCode = digits
+                            }
+                        },
                         label = { Text("6-digit SMS Code") },
                         singleLine = true,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         modifier = Modifier.fillMaxWidth()
                     )
 
@@ -142,8 +167,10 @@ fun AuthScreen(
 
                     Button(
                         onClick = {
-                            if (otpCode.length < 4) {
-                                errorMessage = "Please enter the verification code."
+                            if (otpCode.length > 6) {
+                                errorMessage = "Code cannot exceed 6 digits"
+                            } else if (otpCode.length < 6) {
+                                errorMessage = "Code must be 6 digits"
                             } else {
                                 onAuthSuccess()
                             }

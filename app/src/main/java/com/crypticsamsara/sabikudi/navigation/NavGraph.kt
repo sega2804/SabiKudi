@@ -186,7 +186,8 @@ fun SabiKudiNavGraph(
         composable(Destinations.CAMERA_SCAN) {
             CameraScanScreen(
                 onCaptureComplete = { navController.navigate(Destinations.RECEIPT_REVIEW) },
-                onManualEntryRequested = { navController.popBackStack() }
+                onManualEntryRequested = { navController.popBackStack() },
+                onBackRequested = { navController.popBackStack() }
             )
         }
 
@@ -205,7 +206,8 @@ fun SabiKudiNavGraph(
                 },
                 onReceiptSaved = { _ ->
                     navController.popBackStack(Destinations.MAIN_SHELL, false)
-                }
+                },
+                onBackRequested = { navController.popBackStack() }
             )
         }
 
@@ -217,7 +219,8 @@ fun SabiKudiNavGraph(
             AddStockCategoryScreen(
                 viewModel = newReceiptViewModel,
                 itemIndex = itemIndex,
-                onStockSaved = { navController.popBackStack() }
+                onStockSaved = { navController.popBackStack() },
+                onBackRequested = { navController.popBackStack() }
             )
         }
 
@@ -241,7 +244,8 @@ fun SabiKudiNavGraph(
                 },
                 onNavigateToGroupsManager = {
                     navController.navigate(Destinations.PEOPLE_GROUPS)
-                }
+                },
+                onBackRequested = { navController.popBackStack() }
             )
         }
 
@@ -251,7 +255,8 @@ fun SabiKudiNavGraph(
                 initialMembers = listOf("Ada", "Chidi", "Ngozi"),
                 onNavigateToSplitReview = {
                     navController.navigate(Destinations.SPLIT_REVIEW)
-                }
+                },
+                onBackRequested = { navController.popBackStack() }
             )
         }
 
@@ -260,7 +265,8 @@ fun SabiKudiNavGraph(
                 viewModel = newReceiptViewModel,
                 onSplitConfirmed = {
                     navController.popBackStack(Destinations.RECEIPT_REVIEW, false)
-                }
+                },
+                onBackRequested = { navController.popBackStack() }
             )
         }
 
@@ -271,6 +277,7 @@ fun SabiKudiNavGraph(
             val receiptId = backStackEntry.arguments?.getLong("receiptId") ?: 1L
             ReceiptDetailScreen(
                 receiptId = receiptId,
+                onEditRequested = { navController.navigate(Destinations.MANUAL_RECEIPT) },
                 onBackRequested = { navController.popBackStack() }
             )
         }

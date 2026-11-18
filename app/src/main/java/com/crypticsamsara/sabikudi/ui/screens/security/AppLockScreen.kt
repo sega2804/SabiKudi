@@ -3,11 +3,13 @@ package com.crypticsamsara.sabikudi.ui.screens.security
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -22,7 +24,7 @@ fun AppLockScreen(
 ) {
     val extendedColors = SabiKudiTheme.extendedColors
     var pin by remember { mutableStateOf("") }
-    var errorMessage by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
 
     Box(
         modifier = modifier
@@ -53,28 +55,37 @@ fun AppLockScreen(
 
             OutlinedTextField(
                 value = pin,
-                onValueChange = {
-                    pin = it
-                    errorMessage = false
+                onValueChange = { input ->
+                    val digits = input.filter { it.isDigit() }
+                    if (digits.length > 6) {
+                        errorMessage = "PIN cannot exceed 6 digits"
+                        pin = digits.take(6)
+                    } else {
+                        errorMessage = null
+                        pin = digits
+                    }
                 },
                 placeholder = { Text("PIN", textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth()) },
                 singleLine = true,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier.width(200.dp)
             )
 
             Text(
-                text = if (errorMessage) "Wrong PIN. Try 1234." else "Demo PIN: 1234",
+                text = errorMessage ?: "Demo PIN: 1234",
                 fontSize = 13.sp,
-                color = if (errorMessage) extendedColors.terracotta else extendedColors.muted
+                color = if (errorMessage != null) extendedColors.terracotta else extendedColors.muted
             )
 
             Button(
                 onClick = {
                     if (pin == "1234") {
                         onUnlocked()
+                    } else if (pin.length > 6) {
+                        errorMessage = "PIN cannot exceed 6 digits"
                     } else {
-                        errorMessage = true
+                        errorMessage = "Wrong PIN. Try 1234."
                     }
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = extendedColors.navy),

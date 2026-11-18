@@ -76,7 +76,7 @@ fun ModeSelectionScreen(
                         color = extendedColors.navy
                     )
                     Text(
-                        text = "Track stock, low-stock alerts and who owes whom on supplies.",
+                        text = "Track stock inventory, low-stock alerts and business purchases.",
                         fontSize = 13.sp,
                         color = extendedColors.muted
                     )
@@ -85,7 +85,6 @@ fun ModeSelectionScreen(
                         modifier = Modifier.padding(top = 4.dp)
                     ) {
                         TagBadge(text = "Stock", textColor = extendedColors.teal, bgColor = extendedColors.tealBg, borderColor = extendedColors.teal)
-                        TagBadge(text = "Split", textColor = extendedColors.terracotta, bgColor = extendedColors.terracottaBg, borderColor = extendedColors.terracotta)
                     }
                 }
             }

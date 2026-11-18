@@ -3,11 +3,13 @@ package com.crypticsamsara.sabikudi.ui.screens.onboarding
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -24,6 +26,7 @@ fun StaffOnboardingScreen(
     var step by remember { mutableIntStateOf(1) } // 1: Code, 2: SMS, 3: Consent, 4: Waiting
     var workspaceCode by remember { mutableStateOf("") }
     var smsCode by remember { mutableStateOf("") }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
 
     Scaffold(
         topBar = {
@@ -58,14 +61,35 @@ fun StaffOnboardingScreen(
 
                     OutlinedTextField(
                         value = workspaceCode,
-                        onValueChange = { workspaceCode = it.uppercase() },
+                        onValueChange = { input ->
+                            if (input.length > 8) {
+                                errorMessage = "Code cannot exceed 8 characters"
+                                workspaceCode = input.uppercase().take(8)
+                            } else {
+                                errorMessage = null
+                                workspaceCode = input.uppercase()
+                            }
+                        },
                         label = { Text("Workspace Code (e.g. SBK-8821)") },
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth()
                     )
 
+                    if (!errorMessage.isNullOrBlank()) {
+                        Text(text = errorMessage!!, color = extendedColors.terracotta, fontSize = 13.sp, fontWeight = FontWeight.Bold)
+                    }
+
                     Button(
-                        onClick = { if (workspaceCode.isNotEmpty()) step = 2 },
+                        onClick = {
+                            if (workspaceCode.length > 8) {
+                                errorMessage = "Code cannot exceed 8 characters"
+                            } else if (workspaceCode.length < 4) {
+                                errorMessage = "Code must be at least 4 characters"
+                            } else {
+                                errorMessage = null
+                                step = 2
+                            }
+                        },
                         enabled = workspaceCode.length >= 4,
                         colors = ButtonDefaults.buttonColors(containerColor = extendedColors.navy),
                         shape = RoundedCornerShape(8.dp),
@@ -91,14 +115,37 @@ fun StaffOnboardingScreen(
 
                     OutlinedTextField(
                         value = smsCode,
-                        onValueChange = { smsCode = it },
+                        onValueChange = { input ->
+                            val digits = input.filter { it.isDigit() }
+                            if (digits.length > 6) {
+                                errorMessage = "Code cannot exceed 6 digits"
+                                smsCode = digits.take(6)
+                            } else {
+                                errorMessage = null
+                                smsCode = digits
+                            }
+                        },
                         label = { Text("SMS Verification Code") },
                         singleLine = true,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         modifier = Modifier.fillMaxWidth()
                     )
 
+                    if (!errorMessage.isNullOrBlank()) {
+                        Text(text = errorMessage!!, color = extendedColors.terracotta, fontSize = 13.sp, fontWeight = FontWeight.Bold)
+                    }
+
                     Button(
-                        onClick = { if (smsCode.isNotEmpty()) step = 3 },
+                        onClick = {
+                            if (smsCode.length > 6) {
+                                errorMessage = "Code cannot exceed 6 digits"
+                            } else if (smsCode.length < 6) {
+                                errorMessage = "Code must be 6 digits"
+                            } else {
+                                errorMessage = null
+                                step = 3
+                            }
+                        },
                         colors = ButtonDefaults.buttonColors(containerColor = extendedColors.navy),
                         shape = RoundedCornerShape(8.dp),
                         modifier = Modifier.fillMaxWidth().height(48.dp)

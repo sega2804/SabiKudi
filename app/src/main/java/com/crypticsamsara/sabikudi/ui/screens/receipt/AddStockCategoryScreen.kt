@@ -10,6 +10,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import com.crypticsamsara.sabikudi.ui.theme.NavyPrimary
 import com.crypticsamsara.sabikudi.ui.theme.SabiKudiTheme
 import com.crypticsamsara.sabikudi.ui.screens.onboarding.TagBadge
@@ -20,6 +22,7 @@ fun AddStockCategoryScreen(
     viewModel: NewReceiptViewModel,
     itemIndex: Int,
     onStockSaved: () -> Unit,
+    onBackRequested: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.uiState.collectAsState()
@@ -43,6 +46,14 @@ fun AddStockCategoryScreen(
                         fontWeight = FontWeight.Bold,
                         color = NavyPrimary
                     )
+                },
+                navigationIcon = {
+                    IconButton(onClick = onBackRequested) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back"
+                        )
+                    }
                 }
             )
         },
@@ -77,16 +88,22 @@ fun AddStockCategoryScreen(
             ) {
                 OutlinedTextField(
                     value = quantity,
-                    onValueChange = { quantity = it },
+                    onValueChange = { quantity = it.filter { char -> char.isDigit() } },
                     label = { Text("Quantity on hand") },
                     singleLine = true,
+                    keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
+                        keyboardType = androidx.compose.ui.text.input.KeyboardType.Number
+                    ),
                     modifier = Modifier.weight(1f)
                 )
                 OutlinedTextField(
                     value = threshold,
-                    onValueChange = { threshold = it },
+                    onValueChange = { threshold = it.filter { char -> char.isDigit() } },
                     label = { Text("Low threshold") },
                     singleLine = true,
+                    keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
+                        keyboardType = androidx.compose.ui.text.input.KeyboardType.Number
+                    ),
                     modifier = Modifier.weight(1f)
                 )
             }

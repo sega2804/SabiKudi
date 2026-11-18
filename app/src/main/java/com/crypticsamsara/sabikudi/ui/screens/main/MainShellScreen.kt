@@ -203,7 +203,11 @@ fun MainShellScreen(
         ) {
             when (currentTab) {
                 MainTab.Home -> SharedHomeTab(role = role, onNavigateToReceiptDetail = onNavigateToReceiptDetail)
-                MainTab.Dashboard -> BusinessDashboardTab(role = role, onNavigateToReceiptDetail = onNavigateToReceiptDetail)
+                MainTab.Dashboard -> BusinessDashboardTab(
+                    role = role,
+                    onNavigateToReceiptDetail = onNavigateToReceiptDetail,
+                    onNavigateToStaffDevices = onNavigateToStaffDevices
+                )
                 MainTab.History -> HistoryScreen(role = role, onNavigateToReceiptDetail = onNavigateToReceiptDetail)
                 MainTab.Manage -> ManageTabContent(onNavigateToPeopleGroups = onNavigateToPeopleGroups)
                 MainTab.Settings -> SettingsTabContent(
@@ -351,10 +355,10 @@ fun SettingsTabContent(
                 HorizontalDivider(color = extendedColors.line)
 
                 val perms = when (role) {
-                    AppRole.OWNER -> listOf("✓ Add receipts", "✓ Equal & Percent splits", "✓ Costs & profit margins", "✓ Settle & Nudge", "✓ Export CSV & Statement", "✓ Manage staff & devices")
-                    AppRole.STAFF -> listOf("✓ Add receipts (sent for approval)", "✕ Split items", "✕ See costs & margins", "✕ Settle balances", "✓ Camera scan")
+                    AppRole.OWNER -> listOf("✓ Add receipts", "✓ Stock & inventory control", "✓ Costs & profit margins", "✓ Export CSV & Statement", "✓ Manage staff & devices")
+                    AppRole.STAFF -> listOf("✓ Add receipts (sent for approval)", "✓ Stock entry", "✕ See costs & margins", "✕ Manage staff & devices", "✓ Camera scan")
                     AppRole.ORGANISER -> listOf("✓ Add receipts", "✓ Equal, Percent, Exact, Shares splits", "✓ Balances & settling", "✓ PDF statement", "✓ Manage people & groups")
-                    AppRole.MEMBER -> listOf("✓ Add receipts", "✓ Equal split", "✓ Own balances (\"I've paid\")", "✕ Settle or Nudge", "✕ PDF statement")
+                    AppRole.MEMBER -> listOf("✓ Add receipts", "✓ View own balances (\"I've paid\")", "✕ Set custom splits", "✕ PDF statement")
                 }
 
                 perms.forEach { perm ->

@@ -140,6 +140,9 @@ fun StockDetailScreen(
                         value = threshold.toString(),
                         onValueChange = { threshold = it.toIntOrNull() ?: 0 },
                         singleLine = true,
+                        keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
+                            keyboardType = androidx.compose.ui.text.input.KeyboardType.Number
+                        ),
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
@@ -164,6 +167,9 @@ fun StockDetailScreen(
                                 onValueChange = { costPriceText = it },
                                 label = { Text("Cost Basis (₦)") },
                                 singleLine = true,
+                                keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
+                                    keyboardType = androidx.compose.ui.text.input.KeyboardType.Decimal
+                                ),
                                 modifier = Modifier.weight(1f)
                             )
                             OutlinedTextField(
@@ -171,6 +177,9 @@ fun StockDetailScreen(
                                 onValueChange = { sellPriceText = it },
                                 label = { Text("Selling Price (₦)") },
                                 singleLine = true,
+                                keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
+                                    keyboardType = androidx.compose.ui.text.input.KeyboardType.Decimal
+                                ),
                                 modifier = Modifier.weight(1f)
                             )
                         }

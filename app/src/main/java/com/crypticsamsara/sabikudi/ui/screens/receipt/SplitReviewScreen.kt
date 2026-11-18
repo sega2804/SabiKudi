@@ -12,6 +12,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import com.crypticsamsara.sabikudi.ui.theme.NavyPrimary
 import com.crypticsamsara.sabikudi.ui.theme.SabiKudiTheme
 
@@ -20,6 +22,7 @@ import com.crypticsamsara.sabikudi.ui.theme.SabiKudiTheme
 fun SplitReviewScreen(
     viewModel: NewReceiptViewModel,
     onSplitConfirmed: () -> Unit,
+    onBackRequested: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.uiState.collectAsState()
@@ -36,6 +39,14 @@ fun SplitReviewScreen(
                         fontWeight = FontWeight.Bold,
                         color = NavyPrimary
                     )
+                },
+                navigationIcon = {
+                    IconButton(onClick = onBackRequested) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back"
+                        )
+                    }
                 }
             )
         },

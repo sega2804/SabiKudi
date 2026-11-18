@@ -13,6 +13,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import com.crypticsamsara.sabikudi.ui.theme.NavyPrimary
 import com.crypticsamsara.sabikudi.ui.theme.SabiKudiTheme
 
@@ -22,6 +24,7 @@ fun ChooseGroupScreen(
     merchantName: String = "Shoprite Ikeja",
     onGroupSelected: (List<String>) -> Unit,
     onNavigateToGroupsManager: () -> Unit,
+    onBackRequested: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val extendedColors = SabiKudiTheme.extendedColors
@@ -40,6 +43,14 @@ fun ChooseGroupScreen(
                         fontWeight = FontWeight.Bold,
                         color = NavyPrimary
                     )
+                },
+                navigationIcon = {
+                    IconButton(onClick = onBackRequested) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back"
+                        )
+                    }
                 }
             )
         },

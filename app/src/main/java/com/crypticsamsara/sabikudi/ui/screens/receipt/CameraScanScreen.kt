@@ -20,6 +20,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import com.crypticsamsara.sabikudi.ui.theme.NavyPrimary
 import com.crypticsamsara.sabikudi.ui.theme.SabiKudiTheme
 
@@ -28,6 +30,7 @@ import com.crypticsamsara.sabikudi.ui.theme.SabiKudiTheme
 fun CameraScanScreen(
     onCaptureComplete: () -> Unit,
     onManualEntryRequested: () -> Unit,
+    onBackRequested: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -70,6 +73,14 @@ fun CameraScanScreen(
                         fontWeight = FontWeight.Bold,
                         color = NavyPrimary
                     )
+                },
+                navigationIcon = {
+                    IconButton(onClick = onBackRequested) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back"
+                        )
+                    }
                 }
             )
         },

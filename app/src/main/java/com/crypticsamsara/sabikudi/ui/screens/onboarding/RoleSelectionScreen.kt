@@ -33,7 +33,7 @@ fun RoleSelectionScreen(
         listOf(
             AppRole.OWNER to Pair(
                 "Owner",
-                "I run the business. I see costs and margins, approve purchases and manage staff."
+                "I run the business. I see costs and margins, manage stock inventory, approve purchases and manage staff."
             ),
             AppRole.STAFF to Pair(
                 "Staff",

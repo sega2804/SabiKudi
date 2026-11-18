@@ -121,7 +121,8 @@ fun HistoryScreen(
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                val filters = listOf("All", "Stock", "Split", "Unassigned")
+                val isBusinessRole = role == AppRole.OWNER || role == AppRole.STAFF
+                val filters = if (isBusinessRole) listOf("All", "Stock", "Unassigned") else listOf("All", "Split", "Unassigned")
                 filters.forEach { filter ->
                     val selected = filter == selectedFilter
                     val chipBg = when {
@@ -187,13 +188,27 @@ fun HistoryScreen(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                                Text(text = receipt.merchant, fontWeight = FontWeight.Bold, color = extendedColors.navy)
+                            Column(
+                                modifier = Modifier.weight(1f),
+                                verticalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                Text(
+                                    text = receipt.merchant,
+                                    fontWeight = FontWeight.Bold,
+                                    color = extendedColors.navy,
+                                    maxLines = 1,
+                                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                                )
                                 Row(
                                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Text(text = "${receipt.date} · ${receipt.itemCount} items", fontSize = 12.sp, color = extendedColors.muted)
+                                    Text(
+                                        text = "${receipt.date} · ${receipt.itemCount} items",
+                                        fontSize = 12.sp,
+                                        color = extendedColors.muted,
+                                        maxLines = 1
+                                    )
 
                                     val tagBg = when (receipt.destination) {
                                         "Stock" -> extendedColors.tealBg
@@ -216,11 +231,14 @@ fun HistoryScreen(
                                 }
                             }
 
+                            Spacer(modifier = Modifier.width(8.dp))
+
                             Text(
                                 text = "₦${String.format("%,.2f", receipt.amountKobo / 100.0)}",
                                 fontSize = 15.sp,
                                 fontWeight = FontWeight.ExtraBold,
-                                color = extendedColors.navy
+                                color = extendedColors.navy,
+                                maxLines = 1
                             )
                         }
                     }

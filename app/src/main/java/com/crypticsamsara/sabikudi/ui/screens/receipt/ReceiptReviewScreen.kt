@@ -16,6 +16,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import com.crypticsamsara.sabikudi.ui.theme.NavyPrimary
 import com.crypticsamsara.sabikudi.ui.theme.SabiKudiTheme
 
@@ -28,6 +30,7 @@ fun ReceiptReviewScreen(
     onNavigateToStockConfig: (Int) -> Unit,
     onNavigateToGroupSplit: () -> Unit,
     onReceiptSaved: (Long) -> Unit,
+    onBackRequested: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.uiState.collectAsState()
@@ -48,6 +51,14 @@ fun ReceiptReviewScreen(
                         fontWeight = FontWeight.Bold,
                         color = NavyPrimary
                     )
+                },
+                navigationIcon = {
+                    IconButton(onClick = onBackRequested) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back"
+                        )
+                    }
                 }
             )
         },
@@ -151,6 +162,9 @@ fun ReceiptReviewScreen(
                                         viewModel.updateItemPrice(index, parsed.toLong())
                                     },
                                     singleLine = true,
+                                    keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
+                                        keyboardType = androidx.compose.ui.text.input.KeyboardType.Decimal
+                                    ),
                                     modifier = Modifier.width(110.dp)
                                 )
                             }

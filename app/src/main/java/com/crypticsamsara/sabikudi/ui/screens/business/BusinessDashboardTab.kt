@@ -41,6 +41,7 @@ data class PendingReceipt(
 fun BusinessDashboardTab(
     role: AppRole,
     onNavigateToReceiptDetail: (Long) -> Unit,
+    onNavigateToStaffDevices: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val extendedColors = SabiKudiTheme.extendedColors
@@ -111,7 +112,10 @@ fun BusinessDashboardTab(
             Surface(
                 color = extendedColors.tealBg,
                 shape = RoundedCornerShape(12.dp),
-                modifier = Modifier.fillMaxWidth().border(1.dp, extendedColors.teal, RoundedCornerShape(12.dp))
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(1.dp, extendedColors.teal, RoundedCornerShape(12.dp))
+                    .clickable { onNavigateToStaffDevices() }
             ) {
                 Row(
                     modifier = Modifier.padding(14.dp),
@@ -126,15 +130,18 @@ fun BusinessDashboardTab(
 
         // Top Cards: Low stock & Outstanding
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Card(
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                 shape = RoundedCornerShape(12.dp),
-                modifier = Modifier.weight(1f).border(1.dp, extendedColors.line, RoundedCornerShape(12.dp))
+                modifier = Modifier.weight(1f).fillMaxHeight().border(1.dp, extendedColors.line, RoundedCornerShape(12.dp))
             ) {
-                Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Column(
+                    modifier = Modifier.fillMaxSize().padding(16.dp),
+                    verticalArrangement = Arrangement.SpaceBetween
+                ) {
                     Text(text = "Low stock", fontSize = 13.sp, color = extendedColors.muted)
                     Text(
                         text = lowStockCount.toString(),
@@ -148,9 +155,12 @@ fun BusinessDashboardTab(
             Card(
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                 shape = RoundedCornerShape(12.dp),
-                modifier = Modifier.weight(1f).border(1.dp, extendedColors.line, RoundedCornerShape(12.dp))
+                modifier = Modifier.weight(1f).fillMaxHeight().border(1.dp, extendedColors.line, RoundedCornerShape(12.dp))
             ) {
-                Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Column(
+                    modifier = Modifier.fillMaxSize().padding(16.dp),
+                    verticalArrangement = Arrangement.SpaceBetween
+                ) {
                     Text(text = "Outstanding", fontSize = 13.sp, color = extendedColors.muted)
                     Text(
                         text = "₦${String.format("%,.2f", outstandingAmount / 100.0)}",
@@ -186,22 +196,48 @@ fun BusinessDashboardTab(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Column {
-                                Text(text = receipt.merchant, fontWeight = FontWeight.Bold, color = extendedColors.navy)
-                                Text(text = "From ${receipt.staffName} · ${receipt.itemCount} items", fontSize = 12.sp, color = extendedColors.muted)
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = receipt.merchant,
+                                    fontWeight = FontWeight.Bold,
+                                    color = extendedColors.navy,
+                                    maxLines = 1,
+                                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                                )
+                                Text(
+                                    text = "From ${receipt.staffName} · ${receipt.itemCount} items",
+                                    fontSize = 12.sp,
+                                    color = extendedColors.muted,
+                                    maxLines = 1,
+                                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                                )
                             }
-                            Text(text = "₦${String.format("%,.2f", receipt.amountKobo / 100.0)}", fontWeight = FontWeight.ExtraBold, color = extendedColors.navy)
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "₦${String.format("%,.2f", receipt.amountKobo / 100.0)}",
+                                fontWeight = FontWeight.ExtraBold,
+                                color = extendedColors.navy,
+                                maxLines = 1
+                            )
                         }
 
                         Row(
+                            modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             OutlinedButton(
                                 onClick = { onNavigateToReceiptDetail(receipt.id) },
                                 shape = RoundedCornerShape(8.dp),
-                                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
+                                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
+                                modifier = Modifier.weight(1f)
                             ) {
-                                Text(text = "Review", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = extendedColors.navy)
+                                Text(
+                                    text = "Review",
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = extendedColors.navy,
+                                    maxLines = 1
+                                )
                             }
                             Button(
                                 onClick = {
@@ -210,16 +246,30 @@ fun BusinessDashboardTab(
                                 },
                                 colors = ButtonDefaults.buttonColors(containerColor = extendedColors.teal),
                                 shape = RoundedCornerShape(8.dp),
-                                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
+                                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
+                                modifier = Modifier.weight(1f)
                             ) {
-                                Text(text = "Approve", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                                Text(
+                                    text = "Approve",
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.White,
+                                    maxLines = 1
+                                )
                             }
                             OutlinedButton(
                                 onClick = { selectedReceiptForReject = receipt },
                                 shape = RoundedCornerShape(8.dp),
-                                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
+                                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
+                                modifier = Modifier.weight(1f)
                             ) {
-                                Text(text = "Reject", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = extendedColors.alert)
+                                Text(
+                                    text = "Reject",
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = extendedColors.alert,
+                                    maxLines = 1
+                                )
                             }
                         }
                     }
@@ -258,10 +308,24 @@ fun BusinessDashboardTab(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Column {
-                        Text(text = item.name, fontWeight = FontWeight.Bold, color = extendedColors.navy)
-                        Text(text = item.category, fontSize = 12.sp, color = extendedColors.muted)
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = item.name,
+                            fontWeight = FontWeight.Bold,
+                            color = extendedColors.navy,
+                            maxLines = 1,
+                            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                        )
+                        Text(
+                            text = item.category,
+                            fontSize = 12.sp,
+                            color = extendedColors.muted,
+                            maxLines = 1,
+                            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                        )
                     }
+
+                    Spacer(modifier = Modifier.width(8.dp))
 
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -279,7 +343,8 @@ fun BusinessDashboardTab(
                         Text(
                             text = "${item.quantity} left",
                             fontWeight = FontWeight.Bold,
-                            color = extendedColors.navy
+                            color = extendedColors.navy,
+                            maxLines = 1
                         )
                     }
                 }

@@ -21,7 +21,8 @@ val OnAmberDark = Color(0xFF1A1405)
 val WarningGold = Color(0xFF7A5A10)
 val WarningGoldBg = Color(0xFFFFF4D6)
 
-val AlertPink = Color(0xFFC42B63)
+val AlertRed = Color(0xFFD32F2F)
+val AlertRedBg = Color(0xFFFEE2E2)
 val OnAlertWhite = Color(0xFFFFFFFF)
 
 // Light Theme Surface & Text Tokens
@@ -49,8 +50,8 @@ val DarkSplitPurpleBg = Color(0xFF0E0A2E)
 val DarkSplitPurpleTint = Color(0xFF1A1535)
 val DarkWarningGold = Color(0xFFF2B632)
 val DarkWarningGoldBg = Color(0xFF2E2406)
-val DarkAlertPink = Color(0xFFFF6B9A)
-val DarkOnAlertPink = Color(0xFF2A0714)
+val DarkAlertRed = Color(0xFFEF4444)
+val DarkOnAlertRed = Color(0xFF450A0A)
 
 // Legacy aliases for theme compatibility
 val NavyPrimary = MintPrimary
@@ -72,7 +73,7 @@ data class ExtendedColors(
     val amber: Color,        // Amber Accent (#F2B632)
     val gold: Color,         // Warning Gold (#7A5A10 / #F2B632)
     val goldBg: Color,       // Warning Gold Bg (#FFF4D6 / #2E2406)
-    val alert: Color,        // Alert Pink (#C42B63 / #FF6B9A)
+    val alert: Color,        // Alert Red (#D32F2F / #EF4444)
     val muted: Color,        // Muted Text (#55605A / #A7B1AB)
     val line: Color,         // Divider Line (#DCE3DD / #2A312D)
     val surface2: Color,     // Surface 2 (#EEF1EC / #1B201E)
@@ -89,7 +90,7 @@ val LocalExtendedColors = staticCompositionLocalOf {
         amber = AmberAccent,
         gold = WarningGold,
         goldBg = WarningGoldBg,
-        alert = AlertPink,
+        alert = AlertRed,
         muted = LightMuted,
         line = LightLine,
         surface2 = LightSurface2,

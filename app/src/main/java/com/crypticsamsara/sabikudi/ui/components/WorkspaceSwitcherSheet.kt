@@ -199,7 +199,11 @@ fun WorkspaceSwitcherSheet(
                     )
                     OutlinedTextField(
                         value = joinCodeInput,
-                        onValueChange = { joinCodeInput = it.uppercase() },
+                        onValueChange = { input ->
+                            if (input.length <= 8) {
+                                joinCodeInput = input.uppercase()
+                            }
+                        },
                         placeholder = { Text("e.g. SBK-8821") },
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth()

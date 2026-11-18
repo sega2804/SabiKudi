@@ -14,6 +14,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import com.crypticsamsara.sabikudi.data.preferences.AppRole
 import com.crypticsamsara.sabikudi.ui.theme.NavyPrimary
 import com.crypticsamsara.sabikudi.ui.theme.SabiKudiTheme
@@ -25,6 +27,7 @@ fun SplitAssignmentScreen(
     initialMembers: List<String>,
     userRole: AppRole = AppRole.ORGANISER,
     onNavigateToSplitReview: () -> Unit,
+    onBackRequested: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.uiState.collectAsState()
@@ -38,8 +41,8 @@ fun SplitAssignmentScreen(
     val availableTypes = remember(userRole) {
         when (userRole) {
             AppRole.ORGANISER -> listOf(SplitType.EQUAL to "Equal", SplitType.PERCENT to "Percent", SplitType.EXACT to "Exact", SplitType.SHARES to "Shares")
-            AppRole.OWNER -> listOf(SplitType.EQUAL to "Equal", SplitType.EXACT to "Exact")
-            AppRole.STAFF, AppRole.MEMBER -> listOf(SplitType.EQUAL to "Equal")
+            AppRole.MEMBER -> listOf(SplitType.EQUAL to "Equal")
+            else -> listOf(SplitType.EQUAL to "Equal")
         }
     }
 
@@ -57,6 +60,14 @@ fun SplitAssignmentScreen(
                         fontWeight = FontWeight.Bold,
                         color = NavyPrimary
                     )
+                },
+                navigationIcon = {
+                    IconButton(onClick = onBackRequested) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back"
+                        )
+                    }
                 }
             )
         },
@@ -154,6 +165,9 @@ fun SplitAssignmentScreen(
                                 else -> ""
                             }) },
                             singleLine = true,
+                            keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
+                                keyboardType = androidx.compose.ui.text.input.KeyboardType.Decimal
+                            ),
                             modifier = Modifier.width(110.dp)
                         )
                     }

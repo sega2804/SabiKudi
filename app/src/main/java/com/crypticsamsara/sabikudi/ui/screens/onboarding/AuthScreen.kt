@@ -1,6 +1,6 @@
 package com.crypticsamsara.sabikudi.ui.screens.onboarding
 
-import androidx.compose.foundation.border
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -24,10 +24,13 @@ fun AuthScreen(
     modifier: Modifier = Modifier
 ) {
     val extendedColors = SabiKudiTheme.extendedColors
-    var step by remember { mutableIntStateOf(1) } // 1: Phone number, 2: OTP verification
-    var phoneNumber by remember { mutableStateOf("+234 ") }
+    var step by remember { mutableIntStateOf(1) } // 1: Phone, 2: Phone OTP, 3: Email Step-Up Code
+    var phoneNumber by remember { mutableStateOf("+234") }
     var otpCode by remember { mutableStateOf("") }
+    var emailCode by remember { mutableStateOf("") }
+    var maskedEmail by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf<String?>(null) }
+    var isLimitedSession by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -76,16 +79,10 @@ fun AuthScreen(
                     OutlinedTextField(
                         value = phoneNumber,
                         onValueChange = { input ->
-                            val digits = input.filter { it.isDigit() }
-                            if (digits.length > 10) {
-                                errorMessage = "Phone number cannot exceed 10 digits"
-                                phoneNumber = digits.take(10)
-                            } else {
-                                errorMessage = null
-                                phoneNumber = input
-                            }
+                            errorMessage = null
+                            phoneNumber = input
                         },
-                        label = { Text("Phone Number") },
+                        label = { Text("Phone Number (E.164 format)") },
                         singleLine = true,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                         modifier = Modifier.fillMaxWidth()
@@ -99,11 +96,9 @@ fun AuthScreen(
 
                     Button(
                         onClick = {
-                            val digits = phoneNumber.filter { it.isDigit() }
-                            if (digits.length > 10) {
-                                errorMessage = "Phone number cannot exceed 10 digits"
-                            } else if (digits.length < 10) {
-                                errorMessage = "Phone number must be 10 digits"
+                            val clean = phoneNumber.trim()
+                            if (!clean.startsWith("+") || clean.length < 11) {
+                                errorMessage = "Enter phone with country code (e.g., +2348012345678)"
                             } else {
                                 step = 2
                             }
@@ -163,13 +158,27 @@ fun AuthScreen(
                         Text(text = errorMessage!!, color = extendedColors.terracotta, fontSize = 13.sp, fontWeight = FontWeight.Bold)
                     }
 
+                    if (isLimitedSession) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(extendedColors.terracotta.copy(alpha = 0.1f), shape = RoundedCornerShape(8.dp))
+                                .padding(12.dp)
+                        ) {
+                            Text(
+                                text = "Notice: Signing in on a new device without a recovery email grants a 24-hour limited session. Destructive actions are locked.",
+                                fontSize = 12.sp,
+                                color = extendedColors.terracotta,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        }
+                    }
+
                     Spacer(modifier = Modifier.weight(1f))
 
                     Button(
                         onClick = {
-                            if (otpCode.length > 6) {
-                                errorMessage = "Code cannot exceed 6 digits"
-                            } else if (otpCode.length < 6) {
+                            if (otpCode.length < 6) {
                                 errorMessage = "Code must be 6 digits"
                             } else {
                                 onAuthSuccess()
@@ -187,6 +196,64 @@ fun AuthScreen(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(text = "Change phone number", color = extendedColors.muted)
+                    }
+                }
+
+                3 -> {
+                    Text(
+                        text = "Verify Recovery Email",
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = extendedColors.navy,
+                        textAlign = TextAlign.Center
+                    )
+                    Text(
+                        text = "Because you are signing in as an owner on a new device, a security code was sent to $maskedEmail.",
+                        fontSize = 13.sp,
+                        color = extendedColors.muted,
+                        textAlign = TextAlign.Center,
+                        lineHeight = 18.sp
+                    )
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    OutlinedTextField(
+                        value = emailCode,
+                        onValueChange = { input ->
+                            val digits = input.filter { it.isDigit() }
+                            if (digits.length > 6) {
+                                errorMessage = "Code cannot exceed 6 digits"
+                                emailCode = digits.take(6)
+                            } else {
+                                errorMessage = null
+                                emailCode = digits
+                            }
+                        },
+                        label = { Text("6-digit Email Code") },
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    if (!errorMessage.isNullOrBlank()) {
+                        Text(text = errorMessage!!, color = extendedColors.terracotta, fontSize = 13.sp, fontWeight = FontWeight.Bold)
+                    }
+
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    Button(
+                        onClick = {
+                            if (emailCode.length < 6) {
+                                errorMessage = "Code must be 6 digits"
+                            } else {
+                                onAuthSuccess()
+                            }
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = extendedColors.navy),
+                        shape = RoundedCornerShape(8.dp),
+                        modifier = Modifier.fillMaxWidth().height(48.dp)
+                    ) {
+                        Text(text = "Verify Email Code & Continue", fontWeight = FontWeight.Bold)
                     }
                 }
             }

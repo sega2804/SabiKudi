@@ -24,4 +24,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "SabiKudi"
 include(":app")
+include(":shared")
+include(":server")
  

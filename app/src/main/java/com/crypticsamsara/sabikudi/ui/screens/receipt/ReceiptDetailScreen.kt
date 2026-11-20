@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.crypticsamsara.sabikudi.ui.theme.NavyPrimary
 import com.crypticsamsara.sabikudi.ui.theme.SabiKudiTheme
 
@@ -23,7 +24,7 @@ import com.crypticsamsara.sabikudi.ui.theme.SabiKudiTheme
 @Composable
 fun ReceiptDetailScreen(
     receiptId: Long,
-    viewModel: ReceiptDetailViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    viewModel: ReceiptDetailViewModel = hiltViewModel(),
     onEditRequested: () -> Unit,
     onBackRequested: () -> Unit,
     modifier: Modifier = Modifier

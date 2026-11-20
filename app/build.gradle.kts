@@ -44,6 +44,8 @@ android {
 }
 
 dependencies {
+    implementation(project(":shared"))
+
     // Platform BOMs
     implementation(platform(libs.androidx.compose.bom))
     implementation(platform(libs.firebase.bom))

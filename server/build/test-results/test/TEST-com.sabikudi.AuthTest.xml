@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.sabikudi.AuthTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-11-20T01:12:18.244Z" hostname="DESKTOP-RE4K8CD" time="4.063">
+  <properties/>
+  <testcase name="phoneNormalizationWorksForNigerianFormats()" classname="com.sabikudi.AuthTest" time="1.068"/>
+  <testcase name="cryptoSixDigitCodeGeneratesSixDigits()" classname="com.sabikudi.AuthTest" time="0.127"/>
+  <testcase name="appConfigValidatesProdSecrets()" classname="com.sabikudi.AuthTest" time="1.218"/>
+  <testcase name="cryptoConstantTimeEqualsWorks()" classname="com.sabikudi.AuthTest" time="0.038"/>
+  <testcase name="invalidPhoneFormatThrowsValidationError()" classname="com.sabikudi.AuthTest" time="0.003"/>
+  <testcase name="emailNormalizationAndMaskingWork()" classname="com.sabikudi.AuthTest" time="0.024"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.sabikudi.shared.PolicyMatrixTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-11-20T01:05:30.116Z" hostname="DESKTOP-RE4K8CD" time="0.191">
+  <properties/>
+  <testcase name="deleteWorkspaceIsOwnerOnly" classname="com.sabikudi.shared.PolicyMatrixTest" time="0.105"/>
+  <testcase name="memberReceiptCreationNeedsPermission" classname="com.sabikudi.shared.PolicyMatrixTest" time="0.005"/>
+  <testcase name="ownerHasFullAccessInBothModes" classname="com.sabikudi.shared.PolicyMatrixTest" time="0.027"/>
+  <testcase name="staffPermissionsCheck" classname="com.sabikudi.shared.PolicyMatrixTest" time="0.001"/>
+  <testcase name="modeScopingRejectsInvalidModes" classname="com.sabikudi.shared.PolicyMatrixTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
